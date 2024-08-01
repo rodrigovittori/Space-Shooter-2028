@@ -1,7 +1,7 @@
 #pgzero
 import random
 
-# M6.L1: Actividad #4: "Relanzamiento de naves enemigas"
+# M6.L1: Actividad #5: "Colisiones"
 
 """
 
@@ -85,6 +85,14 @@ def mov_flota_enemiga():
     else:
       nave_enemiga.y += nave_enemiga.velocidad
 
+def comprobar_colisiones():
+
+  # Comprobar colisiones con enemigos
+  for nave_enemiga in lista_enemigos:
+    if nave.colliderect(nave_enemiga):
+      exit() # cerramos el juego
+      # To-do: modificar por game_over
+
 """ #####################
    # FUNCIONES PG ZERO #
   ##################### """
@@ -119,3 +127,4 @@ for e in range(CANT_ENEMIGOS):
 
 def update(dt):
   mov_flota_enemiga()
+  comprobar_colisiones()
