@@ -1,7 +1,7 @@
 #pgzero
 import random
 
-# M6.L1: Actividad #6: "Se acabó el juego"
+# M6.L1: Actividad #8: "Planetas (Asignación extra)"
 
 """
 
@@ -35,6 +35,20 @@ fondo = Actor("space")
 
 # Listas
 lista_enemigos = []
+planetas = []
+
+# Creamos los planetas
+planeta_1 = Actor("plan1", (random.randint(0, WIDTH), random.randint(-400, -50)))
+planeta_1.angle = random.randint(0,359)
+planetas.append(planeta_1)
+
+planeta_2 = Actor("plan2", (random.randint(0, WIDTH), random.randint(-800, -450)))
+planeta_2.angle = random.randint(0,359)
+planetas.append(planeta_2)
+
+planeta_3 = Actor("plan3", (random.randint(0, WIDTH), random.randint(-1200, -850)))
+planeta_3.angle = random.randint(0,359)
+planetas.append(planeta_3)
 
 """ ***************************************************************** """
 
@@ -86,6 +100,15 @@ def mov_flota_enemiga():
     else:
       nave_enemiga.y += nave_enemiga.velocidad
 
+def mov_planetas(delta_y):
+  for planeta_actual in planetas:
+    planeta_actual.y += delta_y
+
+    if (planeta_actual.y > (HEIGHT + planeta_actual.height)):
+      planeta_actual.x = random.randint(0, WIDTH)
+      planeta_actual.y = random.randint(-1200, -850)
+      planeta_actual.angle = random.randint(0,359)
+
 def comprobar_colisiones():
   global modo_actual
   # Comprobar colisiones con enemigos
@@ -101,6 +124,9 @@ def draw():
 
   if (modo_actual == "juego"):
     fondo.draw()
+
+    for planeta in planetas:
+      planeta.draw()
     
     for nave_enemiga in lista_enemigos:
       nave_enemiga.draw()
@@ -142,6 +168,7 @@ def update(dt):
   global modo_actual
   
   if (modo_actual == "juego"):
+    mov_planetas(1) # Check: si modifico el juego asegurarme de actualizar el delta_y
     mov_flota_enemiga()
     comprobar_colisiones()
   
