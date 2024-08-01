@@ -1,7 +1,10 @@
 #pgzero
 import random
 
-# M6.L1: Actividad #8: "Planetas (Asignación extra)"
+# M6.L1: Tarea #1: "Meteoritos"
+
+# Nota: deshabilitamos las partes del código de los planetas porque la HW
+#       NO tiene cargados los assets de los planetas
 
 """
 
@@ -28,6 +31,7 @@ FPS = 30
 
 # Objetos y Variables
 CANT_ENEMIGOS = 5 # Cantidad de enemigos a spawnear
+CANT_METEORITOS = 5 # Cantidad de meteoritos a spawnear
 modo_actual = "juego"
 
 nave = Actor("ship", (300,300))
@@ -35,8 +39,10 @@ fondo = Actor("space")
 
 # Listas
 lista_enemigos = []
+lista_meteoritos = []
 planetas = []
 
+"""
 # Creamos los planetas
 planeta_1 = Actor("plan1", (random.randint(0, WIDTH), random.randint(-400, -50)))
 planeta_1.angle = random.randint(0,359)
@@ -49,6 +55,7 @@ planetas.append(planeta_2)
 planeta_3 = Actor("plan3", (random.randint(0, WIDTH), random.randint(-1200, -850)))
 planeta_3.angle = random.randint(0,359)
 planetas.append(planeta_3)
+"""
 
 """ ***************************************************************** """
 
@@ -87,10 +94,32 @@ def spawn_nvo_enemigo(tipo=""):
     lista_enemigos.append(nvo_enemigo)
     ##########################################
 
+def spawn_nvo_meteorito(tipo=""):
+
+  # Determinar tipo de meteoro a añadir:
+    if tipo == "":
+        tipo = "meteor"
+  
+    # Setear coordenadas random (importamos la librería)
+    x = random.randint(50, WIDTH-50)
+    y = random.randint(-200, -50)
+  
+    # To-do: permitir que haya más de un tipo de enemigo
+  
+    # Crear nvo_enemigo según el tipo:
+    nvo_meteorito= Actor(tipo, (x, y))
+    nvo_meteorito.angle = random.randint(0, 359)
+    nvo_meteorito.velocidad = random.randint(5, 10) # o variable global
+      
+    """ VER NOTAS SPAWN NVO ENEMIGO """
+               
+    lista_meteoritos.append(nvo_meteorito)
+    ##########################################
+
 def mov_flota_enemiga():
   
   for nave_enemiga in lista_enemigos:
-    if (nave_enemiga.y > (HEIGHT + 50)): # Si se salió de la pantalla
+    if (nave_enemiga.y > (HEIGHT + nave_enemiga.height)): # Si se salió de la pantalla
             # La reciclamos:
             nave_enemiga.y = random.randint(-200, -50)
             nave_enemiga.x = random.randint(50, WIDTH - 50)
@@ -99,6 +128,24 @@ def mov_flota_enemiga():
       
     else:
       nave_enemiga.y += nave_enemiga.velocidad
+
+
+def mov_meteoritos():
+  
+  for meteorito in lista_meteoritos:
+    if (meteorito.y > (HEIGHT + meteorito.height)): # Si se salió de la pantalla
+            # Lo reciclamos:
+            meteorito.y = random.randint(-200, -50)
+            meteorito.x = random.randint(50, WIDTH - 50)
+            meteorito.angle = random.randint(0, 359)
+            # Nota: si cambiamos la velocidad según la dificultad, modificar ésto:
+            meteorito.velocidad = random.randint(5, 10) # o variable global
+      
+    else:
+      meteorito.y += meteorito.velocidad
+      meteorito.angle += 1
+      if (meteorito.angle > 360):
+        meteorito.angle -= 360
 
 def mov_planetas(delta_y):
   for planeta_actual in planetas:
@@ -116,6 +163,11 @@ def comprobar_colisiones():
     if nave.colliderect(nave_enemiga):
       modo_actual = "game_over" # Terminamos el juego
 
+  for meteorito in lista_meteoritos:
+    if nave.colliderect(meteorito):
+      modo_actual = "game_over" # Terminamos el juego
+  
+
 """ #####################
    # FUNCIONES PG ZERO #
   ##################### """
@@ -130,6 +182,9 @@ def draw():
     
     for nave_enemiga in lista_enemigos:
       nave_enemiga.draw()
+
+    for meteorito in lista_meteoritos:
+      meteorito.draw()
     
     #screen.draw.text(TITLE, center=(300, 100), color="white", background="black")
   
@@ -159,6 +214,9 @@ def on_mouse_move(pos):
 # To-do: convertir a FN p/ iniciar/reiniciar el juego
 for e in range(CANT_ENEMIGOS):
   spawn_nvo_enemigo()
+  
+for m in range(CANT_METEORITOS):
+  spawn_nvo_meteorito()
 
 ##################
 # BUCLE DE JUEGO #
@@ -168,7 +226,8 @@ def update(dt):
   global modo_actual
   
   if (modo_actual == "juego"):
-    mov_planetas(1) # Check: si modifico el juego asegurarme de actualizar el delta_y
+    # mov_planetas(1) # Check: si modifico el juego asegurarme de actualizar el delta_y
+    mov_meteoritos()
     mov_flota_enemiga()
     comprobar_colisiones()
   
