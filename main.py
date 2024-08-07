@@ -1,8 +1,8 @@
 #pgzero
 import random
 
-# M6.L2: Tarea #2: "Menú de inicio"
-# Objetivo: Agregar menú de selección del modelo de nave antes de comenzar la partida
+# M6.L2: Tarea #4: "Disparos"
+# Objetivo: Agregar capacidad de disparar proyectiles
 
 """
 
@@ -45,7 +45,7 @@ tipo3 = Actor("ship3", (500, 225))
 lista_enemigos = []
 lista_meteoritos = []
 planetas = []
-
+lista_proyectiles = []
 
 # Creamos los planetas
 planeta_1 = Actor("plan1", (random.randint(0, WIDTH), random.randint(-400, -50)))
@@ -158,12 +158,25 @@ def mov_planetas(delta_y):
       planeta_actual.y = random.randint(-1200, -850)
       planeta_actual.angle = random.randint(0,359)
 
+def mov_proyectiles():
+    for p in lista_proyectiles:
+        if (p.y < -20): # Si se salió de la pantalla
+            lista_proyectiles.remove(p)
+        else:
+            # Nota: si cambiamos la velocidad de los proyectiles según power-ups, modificar:
+            p.y -= 10 # velocidad de proyectiles
+
 def comprobar_colisiones():
+
+    # Nota: no editar se resuelve en la prox. tarea
+    
   global modo_actual
   # Comprobar colisiones con enemigos
   for nave_enemiga in lista_enemigos:
     if nave.colliderect(nave_enemiga):
       modo_actual = "game_over" # Terminamos el juego
+
+        # To-do (prox.ejercicio): agregar colisión con proyectiles
 
   for meteorito in lista_meteoritos:
     if nave.colliderect(meteorito):
@@ -188,6 +201,13 @@ def on_mouse_down(button, pos):
     elif ((modo_actual == "menu") and (tipo3.collidepoint(pos))):
         nave.image = "ship3"
         modo_actual = "juego"
+        
+    #############################
+
+    if (modo_actual == "juego") and (button == mouse.LEFT):
+        nvo_proyectil = Actor("missiles", nave.pos)
+        # NOTA: si quiero tener distintos tipos de proyectiles con distintas velocidades debería agregar un atributo al Actor
+        lista_proyectiles.append(nvo_proyectil)
 
 def draw():
 
@@ -202,6 +222,9 @@ def draw():
 
     for meteorito in lista_meteoritos:
       meteorito.draw()
+
+    for proyectil in lista_proyectiles:
+        proyectil.draw()
     
     #screen.draw.text(TITLE, center=(300, 100), color="white", background="black")
   
@@ -255,6 +278,7 @@ def update(dt):
     mov_planetas(1) # Check: si modifico el juego asegurarme de actualizar el delta_y
     mov_meteoritos()
     mov_flota_enemiga()
+    mov_proyectiles()
     comprobar_colisiones()
   
   elif modo_actual == "game_over":
