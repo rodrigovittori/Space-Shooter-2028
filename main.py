@@ -1,10 +1,8 @@
 #pgzero
 import random
 
-# M6.L1: Tarea #1: "Meteoritos"
-
-# Nota: deshabilitamos las partes del código de los planetas porque la HW
-#       NO tiene cargados los assets de los planetas
+# M6.L2: Tarea #2: "Menú de inicio"
+# Objetivo: Agregar menú de selección del modelo de nave antes de comenzar la partida
 
 """
 
@@ -32,17 +30,23 @@ FPS = 30
 # Objetos y Variables
 CANT_ENEMIGOS = 5 # Cantidad de enemigos a spawnear
 CANT_METEORITOS = 5 # Cantidad de meteoritos a spawnear
-modo_actual = "juego"
+modo_actual = "menu"
 
 nave = Actor("ship", (300,300))
 fondo = Actor("space")
+
+# Modelos Naves
+
+tipo1 = Actor("ship1", (100, 225))
+tipo2 = Actor("ship2", (300, 225))
+tipo3 = Actor("ship3", (500, 225))
 
 # Listas
 lista_enemigos = []
 lista_meteoritos = []
 planetas = []
 
-"""
+
 # Creamos los planetas
 planeta_1 = Actor("plan1", (random.randint(0, WIDTH), random.randint(-400, -50)))
 planeta_1.angle = random.randint(0,359)
@@ -55,7 +59,6 @@ planetas.append(planeta_2)
 planeta_3 = Actor("plan3", (random.randint(0, WIDTH), random.randint(-1200, -850)))
 planeta_3.angle = random.randint(0,359)
 planetas.append(planeta_3)
-"""
 
 """ ***************************************************************** """
 
@@ -129,7 +132,6 @@ def mov_flota_enemiga():
     else:
       nave_enemiga.y += nave_enemiga.velocidad
 
-
 def mov_meteoritos():
   
   for meteorito in lista_meteoritos:
@@ -172,6 +174,21 @@ def comprobar_colisiones():
    # FUNCIONES PG ZERO #
   ##################### """
 
+def on_mouse_down(button, pos):
+    global modo_actual
+    
+    if ((modo_actual == "menu") and (tipo1.collidepoint(pos))):
+        nave.image = "ship1"
+        modo_actual = "juego"
+        
+    elif ((modo_actual == "menu") and (tipo2.collidepoint(pos))):
+        nave.image = "ship2"
+        modo_actual = "juego"
+    
+    elif ((modo_actual == "menu") and (tipo3.collidepoint(pos))):
+        nave.image = "ship3"
+        modo_actual = "juego"
+
 def draw():
 
   if (modo_actual == "juego"):
@@ -193,6 +210,15 @@ def draw():
   
     nave.draw()
 
+  elif (modo_actual == "menu"):
+      fondo.draw()
+
+      screen.draw.text("ELIGE TU NAVE", center=(int(WIDTH/2), int(HEIGHT/4)), color = "white", background="black", fontsize = 36)
+
+      tipo1.draw()
+      tipo2.draw()
+      tipo3.draw()
+  
   elif (modo_actual == "game_over"):
 
     fondo.draw()
@@ -226,7 +252,7 @@ def update(dt):
   global modo_actual
   
   if (modo_actual == "juego"):
-    # mov_planetas(1) # Check: si modifico el juego asegurarme de actualizar el delta_y
+    mov_planetas(1) # Check: si modifico el juego asegurarme de actualizar el delta_y
     mov_meteoritos()
     mov_flota_enemiga()
     comprobar_colisiones()
@@ -235,3 +261,4 @@ def update(dt):
     if keyboard.enter:
       modo_actual = "juego"
       # To-Do: agregar función reset_game()
+#################################
