@@ -1,8 +1,8 @@
 #pgzero
 import random
 
-# M6.L2: Tarea #4: "Disparos"
-# Objetivo: Agregar capacidad de disparar proyectiles
+# M6.L2: Tarea #5: "Colisiones de proyectiles"
+# Objetivo: Agregar colisiones a los proyectiles
 
 """
 
@@ -176,12 +176,27 @@ def comprobar_colisiones():
     if nave.colliderect(nave_enemiga):
       modo_actual = "game_over" # Terminamos el juego
 
-        # To-do (prox.ejercicio): agregar colisión con proyectiles
+    for p in lista_proyectiles:
+            if p.colliderect(nave_enemiga):
+                # To-do: aumentar puntuación (eliminé enemigo)
+                # To-do: agregar explosión
+                lista_enemigos.remove(nave_enemiga)
+                lista_proyectiles.remove(p)
+                spawn_nvo_enemigo()
 
   for meteorito in lista_meteoritos:
     if nave.colliderect(meteorito):
       modo_actual = "game_over" # Terminamos el juego
-  
+
+    for p in lista_proyectiles:
+            if p.colliderect(meteorito):
+                # To-do: aumentar puntuación (eliminé enemigo)
+                # To-do: agregar explosión
+                lista_meteoritos.remove(meteorito)
+                lista_proyectiles.remove(p)
+                spawn_nvo_meteorito()
+                
+################################
 
 """ #####################
    # FUNCIONES PG ZERO #
