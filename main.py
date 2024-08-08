@@ -1,8 +1,8 @@
 #pgzero
 import random
 
-# M6.L2: Tarea #5: "Colisiones de proyectiles"
-# Objetivo: Agregar colisiones a los proyectiles
+# M6.L2: Tarea #7: "Puntuación (tarea extra)"
+# Objetivo: Mostrar puntuación por pantalla
 
 """
 
@@ -31,6 +31,7 @@ FPS = 30
 CANT_ENEMIGOS = 5 # Cantidad de enemigos a spawnear
 CANT_METEORITOS = 5 # Cantidad de meteoritos a spawnear
 modo_actual = "menu"
+puntuacion = 0
 
 nave = Actor("ship", (300,300))
 fondo = Actor("space")
@@ -167,10 +168,9 @@ def mov_proyectiles():
             p.y -= 10 # velocidad de proyectiles
 
 def comprobar_colisiones():
-
-    # Nota: no editar se resuelve en la prox. tarea
     
-  global modo_actual
+  global modo_actual, puntuacion
+    
   # Comprobar colisiones con enemigos
   for nave_enemiga in lista_enemigos:
     if nave.colliderect(nave_enemiga):
@@ -178,7 +178,7 @@ def comprobar_colisiones():
 
     for p in lista_proyectiles:
             if p.colliderect(nave_enemiga):
-                # To-do: aumentar puntuación (eliminé enemigo)
+                puntuacion += 100
                 # To-do: agregar explosión
                 lista_enemigos.remove(nave_enemiga)
                 lista_proyectiles.remove(p)
@@ -190,7 +190,7 @@ def comprobar_colisiones():
 
     for p in lista_proyectiles:
             if p.colliderect(meteorito):
-                # To-do: aumentar puntuación (eliminé enemigo)
+                puntuacion += 20
                 # To-do: agregar explosión
                 lista_meteoritos.remove(meteorito)
                 lista_proyectiles.remove(p)
@@ -243,9 +243,11 @@ def draw():
     
     #screen.draw.text(TITLE, center=(300, 100), color="white", background="black")
   
-    texto_temp = "Coord: (x: " + str(int(nave.x)) + ", y: " + str(int(nave.y)) + ")"
-    screen.draw.text(texto_temp, midleft=(20, 20), color = "white", fontsize = 24)
-  
+    #texto_temp = "Coord: (x: " + str(int(nave.x)) + ", y: " + str(int(nave.y)) + ")"
+    #screen.draw.text(texto_temp, midleft=(20, 20), color = "white", fontsize = 24)
+
+    screen.draw.text(str(puntuacion), midleft=(20, 20), color = "white", fontsize = 24)
+      
     nave.draw()
 
   elif (modo_actual == "menu"):
@@ -261,10 +263,9 @@ def draw():
 
     fondo.draw()
 
-    screen.draw.text("¡TE ESTRELLASTE!", center=(int(WIDTH/2), int(HEIGHT/2)), color = "red", background = "black", fontsize = 48)
-
-    # To-do: agregar mostrar puntuación final
-    # To-do: Mostrar cartel presione enter para reiniciar
+    screen.draw.text("¡TE ESTRELLASTE!", center=(int(WIDTH/2), int(HEIGHT/3)), color = "red", background = "black", fontsize = 48)
+    screen.draw.text(("Puntaje final : " + str(puntuacion)), center = (300,300), color="yellow", fontsize = 24)
+    screen.draw.text("Pulsa [Enter] para reiniciar", center = (300, 400), color = "white", fontsize = 24)
     #        -> To-Do: agregar función reset_game()
     
 def on_mouse_move(pos):
