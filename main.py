@@ -1,18 +1,16 @@
 #pgzero
 import random
 
-# M6.L2: Tarea #7: "Puntuación (tarea extra)"
-# Objetivo: Mostrar puntuación por pantalla
+# M6.L2: Tarea #8: "Volver a empezar el juego (tarea extra)"
+# Objetivo: Crear función que reinicie el juego
 
 """
-
 Kenney assets:
 
 Kodland: https://kenney.nl/assets/space-shooter-extension
 Extra: https://kenney.nl/assets/space-shooter-redux
 Planetas: https://kenney.nl/assets/planets
 UI: https://kenney.nl/assets/ui-pack-space-expansion
-
 """
 
 """ ##################
@@ -45,21 +43,21 @@ tipo3 = Actor("ship3", (500, 225))
 # Listas
 lista_enemigos = []
 lista_meteoritos = []
-planetas = []
+lista_planetas = []
 lista_proyectiles = []
 
-# Creamos los planetas
+# Creamos los lista_planetas
 planeta_1 = Actor("plan1", (random.randint(0, WIDTH), random.randint(-400, -50)))
 planeta_1.angle = random.randint(0,359)
-planetas.append(planeta_1)
+lista_planetas.append(planeta_1)
 
 planeta_2 = Actor("plan2", (random.randint(0, WIDTH), random.randint(-800, -450)))
 planeta_2.angle = random.randint(0,359)
-planetas.append(planeta_2)
+lista_planetas.append(planeta_2)
 
 planeta_3 = Actor("plan3", (random.randint(0, WIDTH), random.randint(-1200, -850)))
 planeta_3.angle = random.randint(0,359)
-planetas.append(planeta_3)
+lista_planetas.append(planeta_3)
 
 """ ***************************************************************** """
 
@@ -151,7 +149,7 @@ def mov_meteoritos():
         meteorito.angle -= 360
 
 def mov_planetas(delta_y):
-  for planeta_actual in planetas:
+  for planeta_actual in lista_planetas:
     planeta_actual.y += delta_y
 
     if (planeta_actual.y > (HEIGHT + planeta_actual.height)):
@@ -229,7 +227,7 @@ def draw():
   if (modo_actual == "juego"):
     fondo.draw()
 
-    for planeta in planetas:
+    for planeta in lista_planetas:
       planeta.draw()
     
     for nave_enemiga in lista_enemigos:
@@ -276,12 +274,33 @@ def on_mouse_move(pos):
 # INICIALIZAR JUEGO #
 #####################
 
-# To-do: convertir a FN p/ iniciar/reiniciar el juego
-for e in range(CANT_ENEMIGOS):
-  spawn_nvo_enemigo()
-  
-for m in range(CANT_METEORITOS):
-  spawn_nvo_meteorito()
+def reiniciar_juego():
+    global modo_actual, puntuacion
+
+    nave.image = "ship"  # resetear modelo nave
+    puntuacion = 0       # resetear puntuacion
+    modo_actual = "menu" # cambiar modo a menú
+
+    # Vaciar listas:
+    del lista_enemigos[:]
+    del lista_meteoritos[:]  
+    del lista_proyectiles[:]
+
+    # resetear posición planetas
+    for planeta_actual in range(len(lista_planetas)):
+        lista_planetas[planeta_actual].pos = (random.randint(0, WIDTH), random.randint( (-400 * (1 + planeta_actual)), (-50 - (-400 * planeta_actual))))
+        lista_planetas[planeta_actual].angle = random.randint(0,359)
+
+    # Spawnear enemigos    
+    for e in range(CANT_ENEMIGOS):
+        # Nota: en caso de agregar más tipos de enemigos, modificar el spawn para que sea random
+        spawn_nvo_enemigo()
+    
+    for m in range(CANT_METEORITOS):
+        spawn_nvo_meteorito()
+########################################
+
+reiniciar_juego() # inicializamos el juego
 
 ##################
 # BUCLE DE JUEGO #
@@ -299,6 +318,6 @@ def update(dt):
   
   elif modo_actual == "game_over":
     if keyboard.enter:
-      modo_actual = "juego"
+      reiniciar_juego()
       # To-Do: agregar función reset_game()
 #################################
